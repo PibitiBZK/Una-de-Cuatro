@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Una de Cuatro</title>
+  
+  <style>
+    /* Estilos Tema Oscuro Azul */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0b132b;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+    }
+
+    .container {
+      background-color: #1c2541;
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid #3a506b;
+    }
+
+    h1 {
+      color: #ffc600;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(255, 198, 0, 0.3);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Formularios y Controles del Menú */
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #4ea8de;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #3a506b;
+      background-color: #0b132b;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: #ffc600;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 15px;
+    }
+
+    .radio-label {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #3a506b;
+      border-radius: 8px;
+      background-color: #0b132b;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+
+    .radio-group input[type="radio"] {
+      display: none;
+    }
+
+    .radio-group input[type="radio"]:checked + .radio-label {
+      border-color: #ffc600;
+      background-color: #3a506b;
+      color: #ffc600;
+    }
+
+    .btn-start, .btn-restart {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      background-color: #ffc600;
+      color: #0b132b;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+
+    .btn-start:hover, .btn-restart:hover {
+      background-color: #e6b200;
+    }
+
+    /* Header del Juego */
+    .header-info {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #4ea8de;
+      font-size: 1.1rem;
+    }
+
+    .badge-theme {
+      display: inline-block;
+      background-color: #3a506b;
+      color: #ffc600;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 25px;
+    }
+
+    .btn-option {
+      padding: 14px 10px;
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: capitalize;
+      border: 2px solid #3a506b;
+      background-color: #0b132b;
+      color: #e0e1dd;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      outline: none;
+    }
+
+    .btn-option:hover:not(:disabled) {
+      background-color: #3a506b;
+      border-color: #4ea8de;
+      color: #ffffff;
+    }
+
+    /* Feedback visual de Botones */
+    .btn-option.btn-correct {
+      background-color: #2b9348 !important;
+      border-color: #55a630 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(85, 166, 48, 0.6);
+    }
+
+    .btn-option.btn-incorrect {
+      background-color: #d90429 !important;
+      border-color: #ef233c !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(239, 35, 60, 0.6);
+    }
+
+    .description-box {
+      background-color: #0b132b;
+      padding: 18px;
+      border-left: 5px solid #ffc600;
+      border-radius: 8px;
+      text-align: left;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .description-box h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #4ea8de;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .description-box p {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #e0e1dd;
+      margin: 0;
+    }
+
+    .feedback {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      min-height: 28px;
+    }
+
+    .feedback.correct-text { color: #55a630; }
+    .feedback.incorrect-text { color: #ef233c; }
+
+    .spinner {
+      margin: 20px auto;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #ffc600;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Una de Cuatro</h1>
+    
+    <!-- PANTALLA 1: MENÚ PRINCIPAL -->
+    <div id="menu-screen" class="screen">
+      <div class="form-group">
+        <label for="player-name">Nombre del Jugador:</label>
+        <input type="text" id="player-name" class="form-control" placeholder="Entrenador" value="">
+      </div>
+
+      <div class="form-group">
+        <label>Dificultad:</label>
+        <div class="radio-group">
+          <div>
+            <input type="radio" id="diff-normal" name="difficulty" value="normal" checked>
+            <label for="diff-normal" class="radio-label">Normal</label>
+          </div>
+          <div>
+            <input type="radio" id="diff-hard" name="difficulty" value="hard">
+            <label for="diff-hard" class="radio-label">Monotype</label>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-start" onclick="initGameSetup()">¡Comenzar Juego!</button>
+    </div>
+
+    <!-- PANTALLA 2: CARGA -->
+    <div id="loading" class="screen hidden">
+      <div class="spinner"></div>
+      <p id="loading-text">Cargando datos...</p>
+    </div>
+
+    <!-- PANTALLA 3: JUEGO -->
+    <div id="game-screen" class="screen hidden">
+      <div class="header-info">
+        <span id="player-display">Jugador: -</span>
+        <span id="score-text">Aciertos: 0</span>
+      </div>
+      
+      <div class="header-info">
+        <span id="difficulty-display">Modo: Normal</span>
+        <span id="remaining-text">Restantes: 16</span>
+      </div>
+
+      <div id="theme-badge" class="badge-theme hidden"></div>
+
+      <div id="options-container" class="options-grid">
+        <!-- Opciones generadas por JS -->
+      </div>
+
+      <div class="description-box">
+        <h3>Descripción Pokédex</h3>
+        <p id="pokedex-flavor-text">Cargando descripción...</p>
+      </div>
+
+      <div id="feedback-message" class="feedback"></div>
+    </div>
+
+    <!-- PANTALLA 4: FIN DE JUEGO -->
+    <div id="end-screen" class="screen hidden">
+      <h2>¡Juego Terminado!</h2>
+      <p id="final-player-name" style="color: #4ea8de; font-weight: bold; font-size: 1.1rem;"></p>
+      <p id="final-score" style="font-size: 1.3rem; margin-bottom: 25px;"></p>
+      <button class="btn-restart" onclick="resetToMenu()">Volver al Menú</button>
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_POKEMON = 16;
+    const MAX_POKEMON_ID = 1025; // Límite actual de Pokémon en PokeAPI
+    const POKEMON_TYPES = [
+      'normal', 'fire', 'water', 'grass', 'electric', 'ice', 'fighting', 
+      'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 
+      'dragon', 'steel', 'fairy'
+    ];
+
+    // Variables de Estado
+    let playerName = "Entrenador";
+    let difficulty = "normal";
+    let chosenType = null;
+
+    let pokemonList = [];      
+    let poolAvailable = [];    
+    let currentOptions = [];   
+    let currentTarget = null;  
+    let score = 0;
+    let isProcessing = false;
+
+    // Función auxiliar para traducir texto de inglés a español
+    async function translateToSpanish(text) {
+      try {
+        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|es`);
+        const data = await res.json();
+        if (data && data.responseData && data.responseData.translatedText) {
+          return data.responseData.translatedText;
+        }
+      } catch (err) {
+        console.error("Error al traducir el texto:", err);
+      }
+      return text; // Si falla el servicio de traducción, retorna el texto original
+    }
+
+    // Configurar e iniciar la carga según la dificultad seleccionada
+    async function initGameSetup() {
+      const nameInput = document.getElementById('player-name').value.trim();
+      playerName = nameInput !== "" ? nameInput : "Entrenador";
+      difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+
+      document.getElementById('menu-screen').classList.add('hidden');
+      document.getElementById('loading').classList.remove('hidden');
+
+      pokemonList = [];
+
+      if (difficulty === 'normal') {
+        document.getElementById('theme-badge').classList.add('hidden');
+        await loadNormalPokemon();
+      } else {
+        await loadHardPokemon();
+      }
+
+      startGame();
+    }
+
+    // Carga de Pokémon en Modo Normal (16 al azar)
+    async function loadNormalPokemon() {
+      const ids = new Set();
+      while (ids.size < TOTAL_POKEMON) {
+        ids.add(Math.floor(Math.random() * MAX_POKEMON_ID) + 1);
+      }
+      const randomIds = Array.from(ids);
+
+      for (let i = 0; i < randomIds.length; i++) {
+        document.getElementById('loading-text').innerText = `Obteniendo Pokédex (${i + 1}/${TOTAL_POKEMON})...`;
+        await fetchAndProcessPokemon(randomIds[i]);
+      }
+    }
+
+    // Carga de Pokémon en Modo Difícil (16 Pokémon de un mismo tipo)
+    async function loadHardPokemon() {
+      let validPokemonFound = false;
+
+      while (!validPokemonFound) {
+        chosenType = POKEMON_TYPES[Math.floor(Math.random() * POKEMON_TYPES.length)];
+        document.getElementById('loading-text').innerText = `Buscando Pokémon del tipo ${chosenType.toUpperCase()}...`;
+
+        try {
+          const res = await fetch(`https://pokeapi.co/api/v2/type/${chosenType}/`);
+          const data = await res.json();
+
+          const availableInType = data.pokemon.filter(p => {
+            const urlParts = p.pokemon.url.split('/');
+            const id = parseInt(urlParts[urlParts.length - 2]);
+            return id <= MAX_POKEMON_ID;
+          });
+
+          if (availableInType.length >= TOTAL_POKEMON) {
+            const shuffled = availableInType.sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, TOTAL_POKEMON);
+
+            for (let i = 0; i < selected.length; i++) {
+              document.getElementById('loading-text').innerText = `Obteniendo Pokédex tipo ${chosenType.toUpperCase()} (${i + 1}/${TOTAL_POKEMON})...`;
+              const urlParts = selected[i].pokemon.url.split('/');
+              const id = parseInt(urlParts[urlParts.length - 2]);
+              await fetchAndProcessPokemon(id);
+            }
+
+            validPokemonFound = true;
+          }
+        } catch (err) {
+          console.error("Error al obtener tipo:", err);
+        }
+      }
+
+      const badge = document.getElementById('theme-badge');
+      badge.innerText = `Temática: Tipo ${chosenType.toUpperCase()}`;
+      badge.classList.remove('hidden');
+    }
+
+    // Obtener especies, traducir si es necesario y censurar el nombre
+    async function fetchAndProcessPokemon(id) {
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}/`);
+        const data = await res.json();
+
+        // Buscar descripciones en español
+        const spanishEntries = data.flavor_text_entries.filter(
+          entry => entry.language.name === 'es'
+        );
+
+        let rawFlavorText = "";
+
+        if (spanishEntries.length > 0) {
+          // Si existe en español dentro de PokeAPI, usás esa directamente
+          const randomEntry = spanishEntries[Math.floor(Math.random() * spanishEntries.length)].flavor_text;
+          rawFlavorText = randomEntry;
+        } else if (data.flavor_text_entries.length > 0) {
+          // Si no existe en español, tomás una entrada en inglés y la traducís
+          const englishEntries = data.flavor_text_entries.filter(entry => entry.language.name === 'en');
+          const entriesToUse = englishEntries.length > 0 ? englishEntries : data.flavor_text_entries;
+          const randomEntry = entriesToUse[Math.floor(Math.random() * entriesToUse.length)].flavor_text;
+          
+          // Traducción automática de respaldo
+          rawFlavorText = await translateToSpanish(randomEntry);
+        }
+
+        // Limpiar saltos de línea y caracteres especiales
+        let cleanText = rawFlavorText.replace(/[\n\f\r]/g, ' ');
+
+        // Censurar el nombre del Pokémon en la descripción
+        const pokemonName = data.name;
+        const regex = new RegExp(pokemonName, 'gi');
+        cleanText = cleanText.replace(regex, 'Este pokémon');
+
+        pokemonList.push({
+          id: data.id,
+          name: data.name,
+          flavorText: cleanText
+        });
+      } catch (err) {
+        console.error("Error al procesar Pokémon ID:", id, err);
+      }
+    }
+
+    function startGame() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('game-screen').classList.remove('hidden');
+
+      document.getElementById('player-display').innerText = `Jugador: ${playerName}`;
+      document.getElementById('difficulty-display').innerText = `Modo: ${difficulty.toUpperCase()}`;
+
+      poolAvailable = [...pokemonList];
+      currentOptions = poolAvailable.splice(0, 4);
+
+      score = 0;
+      updateStats();
+      nextTurn();
+    }
+
+    function nextTurn() {
+      isProcessing = false;
+
+      if (currentOptions.length === 0) {
+        endGame();
+        return;
+      }
+
+      const randomIndex = Math.floor(Math.random() * currentOptions.length);
+      currentTarget = currentOptions[randomIndex];
+
+      renderOptions();
+
+      document.getElementById('pokedex-flavor-text').innerText = `"${currentTarget.flavorText}"`;
+    }
+
+    function renderOptions() {
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      currentOptions.forEach(pokemon => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = pokemon.name;
+        btn.dataset.id = pokemon.id;
+        btn.onclick = () => handleChoice(pokemon, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleChoice(selectedPokemon, clickedBtn) {
+      if (isProcessing) return;
+      isProcessing = true;
+
+      const allButtons = document.querySelectorAll('.btn-option');
+      allButtons.forEach(b => b.disabled = true);
+
+      const feedbackEl = document.getElementById('feedback-message');
+      const targetIndex = currentOptions.findIndex(p => p.id === currentTarget.id);
+
+      if (selectedPokemon.id === currentTarget.id) {
+        score++;
+        clickedBtn.classList.add('btn-correct');
+        feedbackEl.innerText = '¡Correcto!';
+        feedbackEl.className = 'feedback correct-text';
+      } else {
+        const correctBtn = Array.from(allButtons).find(b => parseInt(b.dataset.id) === currentTarget.id);
+        if (correctBtn) {
+          correctBtn.classList.add('btn-incorrect');
+        }
+        feedbackEl.innerText = `¡Incorrecto! Era ${currentTarget.name.toUpperCase()}`;
+        feedbackEl.className = 'feedback incorrect-text';
+      }
+
+      if (poolAvailable.length > 0) {
+        const newPokemon = poolAvailable.shift();
+        currentOptions[targetIndex] = newPokemon;
+      } else {
+        currentOptions.splice(targetIndex, 1);
+      }
+
+      updateStats();
+
+      setTimeout(() => {
+        feedbackEl.innerText = '';
+        nextTurn();
+      }, 1500);
+    }
+
+    function updateStats() {
+      const remainingTotal = currentOptions.length + poolAvailable.length;
+      document.getElementById('score-text').innerText = `Aciertos: ${score}`;
+      document.getElementById('remaining-text').innerText = `Restantes: ${remainingTotal}`;
+    }
+
+    function endGame() {
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('end-screen').classList.remove('hidden');
+
+      document.getElementById('final-player-name').innerText = `¡Bien jugado, ${playerName}!`;
+      document.getElementById('final-score').innerText = `Puntaje final: ${score} de ${TOTAL_POKEMON}`;
+    }
+
+    function resetToMenu() {
+      document.getElementById('end-screen').classList.add('hidden');
+      document.getElementById('menu-screen').classList.remove('hidden');
+    }
+  </script>
+
+</body>
+</html>
